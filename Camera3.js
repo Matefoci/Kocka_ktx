@@ -391,14 +391,15 @@ Promise.all([
 
 
 function updateCameraProjection() {
-    const width = Math.max(1, container.clientWidth || window.innerWidth);
+     const width = Math.max(1, container.clientWidth || window.innerWidth);
     const height = Math.max(1, container.clientHeight || window.innerHeight);
     const aspect = width / height;
 
     renderer.setSize(width, height, false);
 
-     const adaptivePixelRatio = computeAdaptivePixelRatio(
-        isLowEndDevice ? 1.0 : isMobile ? 1.15 : Math.min(window.devicePixelRatio || 1, 1.75)
+    const adaptivePixelRatio = computeAdaptivePixelRatio(
+        Math.min(window.devicePixelRatio || 1, quality.pixelRatioCap),
+        quality.renderPixelBudget
     );
     renderer.setPixelRatio(adaptivePixelRatio);
 
