@@ -101,7 +101,7 @@ renderer.shadowMap.type = profile.shadows
 renderer.shadowMap.autoUpdate = false;
 renderer.shadowMap.needsUpdate = true;
 
-proflie.shadows = false;
+profile.shadows = false;
 
 sun.castShadow = profile.shadows;
 sun.shadow.mapSize.set(profile.shadowMapSize, profile.shadowMapSize);
