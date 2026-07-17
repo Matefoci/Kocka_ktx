@@ -1,7 +1,6 @@
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xe9e5df);
@@ -101,18 +100,12 @@ renderer.shadowMap.type = profile.shadows
 renderer.shadowMap.autoUpdate = false;
 renderer.shadowMap.needsUpdate = true;
 
-profile.shadows = false;
-
 sun.castShadow = profile.shadows;
 sun.shadow.mapSize.set(profile.shadowMapSize, profile.shadowMapSize);
 sun.shadow.camera.updateProjectionMatrix();
 
 
-const ktx2Loader = new KTX2Loader();
-ktx2Loader.setTranscoderPath(import.meta.env.BASE_URL + 'basis/');
-ktx2Loader.detectSupport(renderer);
-const loader = new GLTFLoader();
-loader.setKTX2Loader(ktx2Loader);
+
 
 // ===== KIEGÉSZÍTŐ FÉNYEK =====
 const fpsOverlay = document.createElement("div");
@@ -212,7 +205,7 @@ function createRotationGizmo(target){
 
 // Loader
 
-
+const loader = new GLTFLoader();
 
 let cubeStructure = null;
 let plane = null;
@@ -266,8 +259,8 @@ const LIFT_SPEED = 0.05;
 let baseY = 0;
 
 const modelUrls = [
-    new URL('./models/kocka-ktx2.glb', import.meta.url).href,
-    new URL('./models/plane-ktx2.glb', import.meta.url).href,
+    new URL('./models/fKisMeretKocka2.glb', import.meta.url).href,
+    new URL('./models/PlaneMeret.glb', import.meta.url).href,
     new URL('./models/Nyil6.glb', import.meta.url).href,
 ];
 
