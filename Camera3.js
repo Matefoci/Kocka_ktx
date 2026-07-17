@@ -221,38 +221,10 @@ let previousX = 0;
 let autoRotate = true;
 const mouse = new THREE.Vector2();
 
-function convertToStandardMaterial(mesh) {
-    const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-
-    const newMaterials = materials.map((mat) => {
-        if (mat.type !== 'MeshStandardMaterial') {
-            const standardMat = new THREE.MeshStandardMaterial({
-                map: mat.map || null,
-                normalMap: mat.normalMap || null,
-                roughnessMap: mat.roughnessMap || null,
-                metalnessMap: mat.metalnessMap || null,
-                aoMap: mat.aoMap || null,
-                color: mat.color ? mat.color.clone() : new THREE.Color(0xffffff),
-                roughness: mat.roughness ?? 0.5,
-                metalness: mat.metalness ?? 0.0,
-                transparent: mat.transparent,
-                opacity: mat.opacity,
-                side: mat.side,
-            });
-            mat.dispose(); // felszabadítjuk a régi, nehezebb anyagot
-            return standardMat;
-        }
-        return mat;
-    });
-
-    mesh.material = Array.isArray(mesh.material) ? newMaterials : newMaterials[0];
-}
-
 
 function applyWoodMaterial(root, tintColor = null, roughnessOverride = null, aoIntensity = 1.0) {
     root.traverse((child) => {
         if (!child.isMesh) return;
-        convertToStandardMaterial(child);
 
         const materials = Array.isArray(child.material) ? child.material : [child.material];
 
