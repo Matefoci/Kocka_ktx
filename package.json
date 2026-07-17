@@ -1,0 +1,26 @@
+{
+  "name": "kockaprojekt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Camera3.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@gltf-transform/cli": "^4.4.1",
+    "vite": "^8.1.4"
+  },
+  "dependencies": {
+    "three": "^0.185.1"
+  },
+  "allowScripts": {
+    "sharp@0.34.5": true
+  }
+}
