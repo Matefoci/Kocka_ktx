@@ -47,69 +47,22 @@ camera.position.set(3.5, 1.8, -3.5);
 camera.lookAt(0, 0, 0);
 
 
-const QUALITY_LEVELS = {
-    low: {
-        pixelRatioCap: 0.9,
-        renderPixelBudget: 900_000,
-        antialias: false,
-        shadows: false,
-        shadowMapSize: 512,
-        exposure: 1.0,
-        lighting: {
-            hemiIntensity: 0.52,
-            ambientIntensity: 0.08,
-            sunIntensity: 0.82,
-            sunColor: 0xfff0df,
-            fillIntensity: 0,
-            rimIntensity: 0,
-        },
-    },
-    medium: {
-        pixelRatioCap: 1.25,
-        renderPixelBudget: 1_250_000,
-        antialias: true,
-        shadows: true,
-        shadowMapSize: 1024,
-        exposure: 1.06,
-        lighting: {
-            hemiIntensity: 0.45,
-            ambientIntensity: 0.1,
-            sunIntensity: 0.92,
-            sunColor: 0xfff1e0,
-            fillIntensity: 2.2,
-            rimIntensity: 0.55,
-        },
-    },
-    high: {
-        pixelRatioCap: 1.75,
-        renderPixelBudget: 1_650_000,
-        antialias: true,
-        shadows: true,
-        shadowMapSize: 1536,
-        exposure: 1.1,
-        lighting: {
-            hemiIntensity: 0.42,
-            ambientIntensity: 0.12,
-            sunIntensity: 1.02,
-            sunColor: 0xfff2e3,
-            fillIntensity: 2.8,
-            rimIntensity: 0.75,
-        },
-    },
-};
+// Cél: ne legyen több, mint kb. 1.3 millió ténylegesen renderelt pixel
+// (ez a szám finomhangolható — kísérletezz vele a te jelenetedhez)
+const MAX_RENDER_PIXELS = 1_300_000;
 
-function computeAdaptivePixelRatio(basePixelRatio, maxRenderPixels) {
+function computeAdaptivePixelRatio(basePixelRatio) {
     const width = window.innerWidth;
     const height = window.innerHeight;
     const requestedPixels = width * height * basePixelRatio * basePixelRatio;
 
-    if (requestedPixels <= maxRenderPixels) {
+    if (requestedPixels <= MAX_RENDER_PIXELS) {
         return basePixelRatio; // belefér a büdzsébe, mehet az eredeti érték
     }
 
     // Ha túllépné a büdzsét, arányosan csökkentjük a pixelRatio-t
-    const scale = Math.sqrt(maxRenderPixels / (width * height));
-    return Math.max(0.7, scale); // kis beágyazott nézetben még legyen olvasható az élek minősége
+    const scale = Math.sqrt(MAX_RENDER_PIXELS / (width * height));
+    return Math.max(0.6, scale); // ne menjünk 0.6 alá, az már túl elmosódott lenne
 }
 
 // Egyszeri, indításkori döntés — eszköz alapján, NEM futásidejű FPS alapján
@@ -121,36 +74,14 @@ const lowMemory = navigator.deviceMemory ? navigator.deviceMemory <= 2 : false;
 const lowCoreCount = navigator.hardwareConcurrency ? navigator.hardwareConcurrency <= 2 : false;
 const isLowEndDevice = lowMemory || lowCoreCount; // csak akkor igaz, ha van konkrét adat rá
 
-function getQualityLevel() {
-    const devicePixelRatio = window.devicePixelRatio || 1;
-    const viewportPixels = window.innerWidth * window.innerHeight;
+const profile = isLowEndDevice
+    ? { pixelRatio: 1.0, antialias: false, shadows: false, shadowMapSize: 512, exposure: 1.0 }
+    : isMobile
+        ? { pixelRatio: 1.15, antialias: true, shadows: true, shadowMapSize: 1024, exposure: 1.05 }
+        : { pixelRatio: Math.min(window.devicePixelRatio || 1, 1.75), antialias: true, shadows: true, shadowMapSize: 1024, exposure: 1.12 };
 
-    if (isLowEndDevice || viewportPixels <= 480_000) {
-        return 'low';
-    }
-
-    if (isMobile || devicePixelRatio <= 1.5) {
-        return 'medium';
-    }
-
-    return 'high';
-}
-
-const qualityLevel = getQualityLevel();
-const quality = QUALITY_LEVELS[qualityLevel];
-
-const profile = {
-    pixelRatio: computeAdaptivePixelRatio(
-        Math.min(window.devicePixelRatio || 1, quality.pixelRatioCap),
-        quality.renderPixelBudget
-    ),
-    antialias: quality.antialias,
-    shadows: quality.shadows,
-    shadowMapSize: quality.shadowMapSize,
-    exposure: quality.exposure,
-    lighting: quality.lighting,
-    qualityLevel,
-};
+// Felülírjuk a pixelRatio-t a TÉNYLEGES viewport-méret alapján, eszköz-kategóriától függetlenül
+profile.pixelRatio = computeAdaptivePixelRatio(profile.pixelRatio);
 
 const canvas = document.querySelector("#bg");
 const container = canvas?.parentElement || document.body;
@@ -158,7 +89,7 @@ const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: profile.antialias,
     alpha: false,
-    powerPreference: profile.qualityLevel === 'low' ? 'low-power' : 'high-performance'
+    powerPreference: isLowEndDevice ? 'low-power' : 'high-performance'
 });
 renderer.setPixelRatio(profile.pixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight, false);
@@ -167,7 +98,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = profile.exposure;
 renderer.shadowMap.enabled = profile.shadows;
 renderer.shadowMap.type = profile.shadows
-    ? (profile.qualityLevel === 'high' ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap)
+    ? (isLowEndDevice ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap)
     : THREE.BasicShadowMap;
 renderer.shadowMap.autoUpdate = false;
 renderer.shadowMap.needsUpdate = true;
@@ -176,16 +107,6 @@ renderer.shadowMap.needsUpdate = true;
 sun.castShadow = profile.shadows;
 sun.shadow.mapSize.set(profile.shadowMapSize, profile.shadowMapSize);
 sun.shadow.camera.updateProjectionMatrix();
-
-hemiLight.intensity = profile.lighting.hemiIntensity;
-ambientLight.intensity = profile.lighting.ambientIntensity;
-sun.color.set(profile.lighting.sunColor);
-sun.intensity = profile.lighting.sunIntensity;
-
-fillLight.intensity = profile.lighting.fillIntensity;
-rimLight.intensity = profile.lighting.rimIntensity;
-fillLight.visible = profile.lighting.fillIntensity > 0;
-rimLight.visible = profile.lighting.rimIntensity > 0;
 
 
 const ktx2Loader = new KTX2Loader();
@@ -221,7 +142,7 @@ function requestShadowUpdate() {
 function updateShadowMap(now) {
     if (!profile.shadows) return;
 
-    const interval = profile.qualityLevel === 'high' ? 140 : 180;
+    const interval = isLowEndDevice ? 240 : 140;
     if (shadowDirty && (now - lastShadowUpdate >= interval || lastShadowUpdate === 0)) {
         renderer.shadowMap.needsUpdate = true;
         lastShadowUpdate = now;
@@ -391,15 +312,14 @@ Promise.all([
 
 
 function updateCameraProjection() {
-     const width = Math.max(1, container.clientWidth || window.innerWidth);
+    const width = Math.max(1, container.clientWidth || window.innerWidth);
     const height = Math.max(1, container.clientHeight || window.innerHeight);
     const aspect = width / height;
 
     renderer.setSize(width, height, false);
 
-    const adaptivePixelRatio = computeAdaptivePixelRatio(
-        Math.min(window.devicePixelRatio || 1, quality.pixelRatioCap),
-        quality.renderPixelBudget
+     const adaptivePixelRatio = computeAdaptivePixelRatio(
+        isLowEndDevice ? 1.0 : isMobile ? 1.15 : Math.min(window.devicePixelRatio || 1, 1.75)
     );
     renderer.setPixelRatio(adaptivePixelRatio);
 
