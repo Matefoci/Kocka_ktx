@@ -128,7 +128,7 @@ const profiles = {
         shadowUpdateInterval: 240,
     },
     1: { // MID TIER (Tabletek, átlagos mobilok)
-        pixelRatio: Math.min(dpr, 1.15),
+        pixelRatio: Math.min(dpr, 1.5),
         minPixelRatio: 0.75,
         antialias: true,
         shadows: true,
@@ -136,7 +136,7 @@ const profiles = {
         shadowType: THREE.PCFShadowMap,
         exposure: 1.05,
         power: 'default',
-        renderPixelBudget: 1_250_000,
+        renderPixelBudget: 1_500_000,
         shadowUpdateInterval: 140,
     },
     2: { // HIGH TIER (Erős asztali gépek)
