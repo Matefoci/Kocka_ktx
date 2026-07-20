@@ -118,7 +118,7 @@ const profiles = {
     0: { // LOW TIER
         pixelRatio: Math.min(dpr, 0.9),
         minPixelRatio: 0.65,
-        antialias: !skipAntialias,
+        antialias: true,
         shadows: true,
         shadowMapSize: 384,
         shadowType: THREE.PCFShadowMap,
@@ -130,7 +130,7 @@ const profiles = {
     1: { // MID TIER (Tabletek, átlagos mobilok)
         pixelRatio: Math.min(dpr, 1.15),
         minPixelRatio: 0.75,
-        antialias: !skipAntialias,
+        antialias: true,
         shadows: true,
         shadowMapSize: 512,
         shadowType: THREE.PCFShadowMap,
