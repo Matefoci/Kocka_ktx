@@ -106,13 +106,13 @@ const profiles = {
     [-1]: { // EMERGENCY TIER
         pixelRatio: Math.min(dpr, 0.7),
         minPixelRatio: 0.55,
-        antialias: false,
+        antialias: true,
         shadows: true,
         shadowMapSize: 256,
         shadowType: THREE.PCFShadowMap,
         exposure: 0.98,
         power: 'low-power',
-        renderPixelBudget: 650_000,
+        renderPixelBudget: 750_000,
         shadowUpdateInterval: 320,
     },
     0: { // LOW TIER
@@ -142,13 +142,13 @@ const profiles = {
         */
         pixelRatio: Math.min(dpr, 0.7),
         minPixelRatio: 0.55,
-        antialias: false,
+        antialias: true,
         shadows: true,
         shadowMapSize: 256,
         shadowType: THREE.PCFShadowMap,
         exposure: 0.98,
         power: 'low-power',
-        renderPixelBudget: 650_000,
+        renderPixelBudget: 750_000,
         shadowUpdateInterval: 320,
     },
     2: {
@@ -166,13 +166,13 @@ const profiles = {
         */
         pixelRatio: Math.min(dpr, 0.7),
         minPixelRatio: 0.55,
-        antialias: false,
+        antialias: true,
         shadows: true,
         shadowMapSize: 256,
         shadowType: THREE.PCFShadowMap,
         exposure: 0.98,
         power: 'low-power',
-        renderPixelBudget: 650_000,
+        renderPixelBudget: 750_000,
         shadowUpdateInterval: 320,
     }
 };
