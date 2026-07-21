@@ -25,9 +25,9 @@ sun.shadow.camera.far = 20;
 scene.add(sun);
 
 
-const DEFAULT_FOV = 28;
+const DEFAULT_FOV = 22;
 const camera = new THREE.PerspectiveCamera(DEFAULT_FOV, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(3.5, 1.8, -3.5);
+camera.position.set(3.3, 1.8, -3.3);
 camera.lookAt(0, 0, 0);
 
 
@@ -421,16 +421,7 @@ function updateCameraProjection() {
 
     camera.aspect = aspect;
 
-     // ÚJ: kis konténer esetén hozzuk közelebb a kamerát / fókuszáljunk jobban
-    const isSmallContainer = width < 400; // a küszöbérték finomhangolható
-
-    if (isSmallContainer) {
-        camera.position.set(3.25, 1.25, -3.25); // közelebbi pozíció, mint az eredeti (3.5, 1.8, -3.5)
-        camera.fov = 29; // kicsit nagyobb FOV, hogy jobban kitöltse a kis dobozt
-    } else {
-        camera.position.set(3.5, 1.8, -3.5); // eredeti, teljes képernyős pozíció
-        camera.fov = DEFAULT_FOV;
-    }
+     
 
     if (aspect < 1) {
         const radAngle = DEFAULT_FOV * Math.PI / 180;
