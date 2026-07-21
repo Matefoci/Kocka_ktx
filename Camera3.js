@@ -240,11 +240,11 @@ function updateShadowMap(now) {
         shadowDirty = false;
     }
 }
-// ===== POINT LIGHTS — eredeti 3 =====
+// ===== POINT LIGHTS — eredeti 3, enyhén finomítva az új, alacsonyabb kameraszöghöz =====
 const pointLightConfigs = [
-    { pos: [3, 1.1, -2.2],   color: 0xffe8cc, intensity: 6 },
-    { pos: [3, 1.5, -2],   color: 0xffe8cc, intensity: 3 },
-    { pos: [0, 0.1, -3.2],     color: 0xfff4e6, intensity: 4 },
+    { pos: [2.6, 1.0, -1.9],   color: 0xffe8cc, intensity: 5.5 },  // kicsit közelebb hozva, mint eredeti (3, 1.1, -2.2)
+    { pos: [2.6, 1.3, -1.7],   color: 0xffe8cc, intensity: 2.8 },
+    { pos: [0, 0.3, -2.8],     color: 0xfff4e6, intensity: 4.2 },  // kicsit feljebb (0.1→0.3), hogy jobban látszódjon oldalról
 ];
 
 const pointLights = pointLightConfigs.map(cfg => {
@@ -255,11 +255,11 @@ const pointLights = pointLightConfigs.map(cfg => {
     return pl;
 });
 
-// ===== POINT LIGHTS — a RectAreaLight-ok kiváltására =====
+// ===== POINT LIGHTS — a RectAreaLight-ok kiváltására, csökkentett felül-hangsúllyal =====
 const rectReplacementConfigs = [
-    { pos: [-0.5, 2.2, 0.6], color: 0xffffff, intensity: 3.0, distance: 8 },
-    { pos: [-1.3, 2.4, 1.6], color: 0xffe8d0, intensity: 3.5, distance: 9 },
-    { pos: [1.7, 1.9, 1.0], color: 0xffe8d0, intensity: 2.8, distance: 8 },
+    { pos: [-0.5, 1.9, 0.5], color: 0xffffff, intensity: 2.6, distance: 8 },   // kicsit lejjebb (2.2→1.9), gyengébb (3.0→2.6) — kevésbé domináns felülről
+    { pos: [-1.2, 1.8, 1.4], color: 0xffe8d0, intensity: 3.2, distance: 9 },   // lejjebb (2.4→1.8), enyhén gyengébb
+    { pos: [1.6, 1.5, 0.9],  color: 0xffe8d0, intensity: 2.8, distance: 8 },   // lejjebb (1.9→1.5) — most inkább oldal-fény, mint felülfény
 ];
 
 const rectReplacementLights = rectReplacementConfigs.map(cfg => {
