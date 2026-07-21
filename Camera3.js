@@ -5,10 +5,7 @@ import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 
 
 const scene = new THREE.Scene();
-// Nagyon világos, letisztult, meleg törtfehér:
 scene.background = new THREE.Color(0xf9f7f4);
-
-// ... pár sorral lejjebb (fontos, hogy a köd is ugyanaz a szín legyen!) ...
 scene.fog = new THREE.Fog(0xf9f7f4, 1.5, 45);
 
 
@@ -27,18 +24,6 @@ sun.shadow.camera.near = 0.5;
 sun.shadow.camera.far = 20;
 scene.add(sun);
 
-/*
-const fillLight = new THREE.PointLight(0xffe8cc, 4.2, 14, 2);
-fillLight.position.set(3.2, 2, -2.4);
-fillLight.castShadow = false;
-scene.add(fillLight);
-
-
-const rimLight = new THREE.PointLight(0x8fb1ff, 1.1, 17, 2);
-rimLight.position.set(-3.2, 2, 2.8);
-rimLight.castShadow = false;
-scene.add(rimLight);
-*/
 
 const DEFAULT_FOV = 28;
 const camera = new THREE.PerspectiveCamera(DEFAULT_FOV, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -69,7 +54,7 @@ const cores = navigator.hardwareConcurrency || (isIOS ? 4 : 2); // iOS ad magoka
 // iOS nem ad memóriát, így ha undefined, a magok számából tippelünk (ha >=6 magos Apple chip, valószínűleg van 4GB+ RAM)
 const memory = navigator.deviceMemory || (isIOS && cores >= 6 ? 4 : 2); 
 
-// 4. Okos élsimítás (Anti-aliasing) döntés
+
 const dpr = window.devicePixelRatio || 1;
 
 // 3. Többszintű (Tier) kategóriarendszer felállítása
@@ -128,7 +113,7 @@ const profiles = {
         shadowUpdateInterval: 240,
     },
     1: { // MID TIER (Tabletek, átlagos mobilok)
-        pixelRatio: Math.min(dpr, 1.5),
+        pixelRatio: Math.min(dpr, 1.3),
         minPixelRatio: 0.75,
         antialias: true,
         shadows: true,
@@ -136,7 +121,7 @@ const profiles = {
         shadowType: THREE.PCFShadowMap,
         exposure: 1.05,
         power: 'default',
-        renderPixelBudget: 1_500_000,
+        renderPixelBudget: 1_300_000,
         shadowUpdateInterval: 140,
         
     },
@@ -165,7 +150,7 @@ profile.pixelRatio = computeAdaptivePixelRatio(
     profile.minPixelRatio
 );
 
-// 6. Renderer inicializálása
+// Renderer inicializálása
 const canvas = document.querySelector("#bg");
 const container = canvas?.parentElement || document.body;
 const renderer = new THREE.WebGLRenderer({
@@ -204,14 +189,15 @@ ktx2Loader.detectSupport(renderer);
 const loader = new GLTFLoader();
 loader.setKTX2Loader(ktx2Loader);
 
-// ===== KIEGÉSZÍTŐ FÉNYEK =====
+
+// ----- Debug overlay -----
 const fpsOverlay = document.createElement("div");
 fpsOverlay.className = "fps-overlay";
 fpsOverlay.textContent = "FPS: --";
 document.body.appendChild(fpsOverlay);
 const debugOverlay = document.createElement("div");
-debugOverlay.className = "fps-overlay"; // ugyanazt a stílust használja, mint az FPS kijelző
-debugOverlay.style.top = "60px"; // hogy ne fedje egymást az FPS kijelzővel — igazítsd a saját CSS-edhez
+debugOverlay.className = "fps-overlay";
+debugOverlay.style.top = "60px";
 debugOverlay.style.fontSize = "11px";
 debugOverlay.style.whiteSpace = "pre-line";
 debugOverlay.textContent = `
@@ -282,40 +268,7 @@ const rectReplacementLights = rectReplacementConfigs.map(cfg => {
     scene.add(pl);
     return pl;
 });
- //GUI fényeléshez
-/*
 
-
-
-const gui = new GUI();
-
-const sunFolder = gui.addFolder('Sun');
-sunFolder.add(sun.position, 'x', -10, 10, 0.1);
-sunFolder.add(sun.position, 'y', -10, 10, 0.1);
-sunFolder.add(sun.position, 'z', -10, 10, 0.1);
-sunFolder.add(sun, 'intensity', 0, 10, 0.1);
-
-pointLights.forEach((pl, i) => {
-    const f = gui.addFolder(`PointLight ${i}`);
-    f.add(pl.position, 'x', -8, 8, 0.1);
-    f.add(pl.position, 'y', -8, 8, 0.1);
-    f.add(pl.position, 'z', -8, 8, 0.1);
-    f.add(pl, 'intensity', 0, 15, 0.1);
-});
-
-rectLights.forEach((rl, i) => {
-    const f = gui.addFolder(`RectLight ${i}`);
-    f.add(rl.position, 'x', -8, 8, 0.1);
-    f.add(rl.position, 'y', -8, 8, 0.1);
-    f.add(rl.position, 'z', -8, 8, 0.1);
-    f.add(rl.rotation, 'x', -Math.PI, Math.PI, 0.01);
-    f.add(rl.rotation, 'y', -Math.PI, Math.PI, 0.01);
-    f.add(rl, 'intensity', 0, 20, 0.1);
-    f.add(rl, 'width', 0.1, 5, 0.1);
-    f.add(rl, 'height', 0.1, 5, 0.1);
-});
-
-*/
 
 // gizmo
 
@@ -397,11 +350,10 @@ let baseY = 0;
 
 const modelUrls = [
     /*
-        new URL('./models/fKisMeretKocka2.glb', import.meta.url).href,
+    new URL('./models/fKisMeretKocka2.glb', import.meta.url).href,
     new URL('./models/PlaneMeret.glb', import.meta.url).href,
     new URL('./models/Nyil6.glb', import.meta.url).href,
 
-    
     */
 
     new URL('./models/kocka-ktx2.glb', import.meta.url).href,
@@ -506,7 +458,6 @@ function animate() {
         const yDiff = Math.abs(cubeStructure.position.y - previousY);
         const rotDiff = Math.abs(cubeStructure.rotation.y - previousRotation);
 
-        // "Mozgásban van" akkor, ha a rotáció/pozíció ténylegesen, érdemben változott
         isMoving = autoRotate || dragging || yDiff > 0.0001 || rotDiff > 0.0001;
     }
 
@@ -592,4 +543,3 @@ window.addEventListener("touchmove", (e) => {
 
 
 animate();
-//// háttér legyen fényesebb
