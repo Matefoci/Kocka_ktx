@@ -425,8 +425,8 @@ function updateCameraProjection() {
     const isSmallContainer = width < 400; // a küszöbérték finomhangolható
 
     if (isSmallContainer) {
-        camera.position.set(3, 1.3, -3); // közelebbi pozíció, mint az eredeti (3.5, 1.8, -3.5)
-        camera.fov = 30; // kicsit nagyobb FOV, hogy jobban kitöltse a kis dobozt
+        camera.position.set(3.25, 1.25, -3.25); // közelebbi pozíció, mint az eredeti (3.5, 1.8, -3.5)
+        camera.fov = 29; // kicsit nagyobb FOV, hogy jobban kitöltse a kis dobozt
     } else {
         camera.position.set(3.5, 1.8, -3.5); // eredeti, teljes képernyős pozíció
         camera.fov = DEFAULT_FOV;
