@@ -69,6 +69,9 @@ const cores = navigator.hardwareConcurrency || (isIOS ? 4 : 2); // iOS ad magoka
 // iOS nem ad memóriát, így ha undefined, a magok számából tippelünk (ha >=6 magos Apple chip, valószínűleg van 4GB+ RAM)
 const memory = navigator.deviceMemory || (isIOS && cores >= 6 ? 4 : 2); 
 
+// 4. Okos élsimítás (Anti-aliasing) döntés
+const dpr = window.devicePixelRatio || 1;
+
 // 3. Többszintű (Tier) kategóriarendszer felállítása
 // -1 = Emergency, 0 = Low, 1 = Mid, 2 = High
 let tier = 2;
@@ -76,7 +79,7 @@ let tier = 2;
 const emergencyDevice =
     memory <= 1 ||
     cores <= 2 ||
-    (isPhone && dpr >= 2 && (memory <= 2 || cores <= 4));
+    (memory <= 2 && cores <= 2);
 
 if (emergencyDevice) {
     tier = -1;
@@ -89,10 +92,7 @@ if (emergencyDevice) {
 // Tabletek "leminősítése": a nagy képernyő miatt a Mid-tier beállítások biztonságosabbak számukra
 if (isTablet && tier === 2) tier = 1;
 
-// 4. Okos élsimítás (Anti-aliasing) döntés
-const dpr = window.devicePixelRatio || 1;
-// Telefonokon, ha nagyon sűrű a kijelző (Retina/OLED), felesleges az élsimítás
-const skipAntialias = isPhone && dpr >= 2;
+
 
 const tierNames = {
     [-1]: 'EMERGENCY',
@@ -128,6 +128,7 @@ const profiles = {
         shadowUpdateInterval: 240,
     },
     1: { // MID TIER (Tabletek, átlagos mobilok)
+        /*
         pixelRatio: Math.min(dpr, 1.5),
         minPixelRatio: 0.75,
         antialias: true,
@@ -138,18 +139,41 @@ const profiles = {
         power: 'default',
         renderPixelBudget: 1_500_000,
         shadowUpdateInterval: 140,
+        */
+        pixelRatio: Math.min(dpr, 0.7),
+        minPixelRatio: 0.55,
+        antialias: false,
+        shadows: true,
+        shadowMapSize: 256,
+        shadowType: THREE.PCFShadowMap,
+        exposure: 0.98,
+        power: 'low-power',
+        renderPixelBudget: 650_000,
+        shadowUpdateInterval: 320,
     },
-    2: { // HIGH TIER (Erős asztali gépek)
+    2: {
+        /* // HIGH TIER (Erős asztali gépek)
         pixelRatio: Math.min(dpr, 1.6),
         minPixelRatio: 0.85,
         antialias: true,
         shadows: true,
         shadowMapSize: 1024,
-        shadowType: THREE.PCFSoftShadowMap,
+        shadowType: THREE.PCFShadowMap,
         exposure: 1.12,
         power: 'high-performance',
         renderPixelBudget: 1_800_000,
         shadowUpdateInterval: 100,
+        */
+        pixelRatio: Math.min(dpr, 0.7),
+        minPixelRatio: 0.55,
+        antialias: false,
+        shadows: true,
+        shadowMapSize: 256,
+        shadowType: THREE.PCFShadowMap,
+        exposure: 0.98,
+        power: 'low-power',
+        renderPixelBudget: 650_000,
+        shadowUpdateInterval: 320,
     }
 };
 
