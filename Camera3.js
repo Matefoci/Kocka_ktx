@@ -122,7 +122,7 @@ const profiles = {
         exposure: 1.05,
         power: 'default',
         renderPixelBudget: 1_300_000,
-        shadowUpdateInterval: 140,
+        shadowUpdateInterval: 200,
         
     },
     2: {
