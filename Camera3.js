@@ -27,8 +27,8 @@ scene.add(sun);
 
 const DEFAULT_FOV = 22;
 const camera = new THREE.PerspectiveCamera(DEFAULT_FOV, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(3.3, 1.8, -3.3);
-camera.lookAt(0, 0, 0);
+camera.position.set(3.3, 1.5, -3.3);
+camera.lookAt(0, 0.1, 0);
 
 
 function computeAdaptivePixelRatio(basePixelRatio, maxRenderPixels, minPixelRatio) {
