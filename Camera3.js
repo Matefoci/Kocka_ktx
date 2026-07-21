@@ -104,7 +104,7 @@ const tierNames = {
 // 5. Grafikai profilok dedikálása a szintekhez
 const profiles = {
     [-1]: { // EMERGENCY TIER
-        pixelRatio: Math.min(dpr, 0.7),
+        pixelRatio: Math.min(dpr, 0.8),
         minPixelRatio: 0.55,
         antialias: true,
         shadows: true,
@@ -112,7 +112,7 @@ const profiles = {
         shadowType: THREE.PCFShadowMap,
         exposure: 0.98,
         power: 'low-power',
-        renderPixelBudget: 750_000,
+        renderPixelBudget: 850_000,
         shadowUpdateInterval: 320,
     },
     0: { // LOW TIER
@@ -140,16 +140,16 @@ const profiles = {
         renderPixelBudget: 1_500_000,
         shadowUpdateInterval: 140,
         */
-        pixelRatio: Math.min(dpr, 0.9),
-        minPixelRatio: 0.65,
+        pixelRatio: Math.min(dpr, 0.8),
+        minPixelRatio: 0.55,
         antialias: true,
         shadows: true,
-        shadowMapSize: 384,
+        shadowMapSize: 256,
         shadowType: THREE.PCFShadowMap,
-        exposure: 1.0,
+        exposure: 0.98,
         power: 'low-power',
-        renderPixelBudget: 900_000,
-        shadowUpdateInterval: 240,
+        renderPixelBudget: 800_000,
+        shadowUpdateInterval: 320,
     },
     2: {
         /* // HIGH TIER (Erős asztali gépek)
@@ -164,16 +164,16 @@ const profiles = {
         renderPixelBudget: 1_800_000,
         shadowUpdateInterval: 100,
         */
-         pixelRatio: Math.min(dpr, 0.9),
-        minPixelRatio: 0.65,
+        pixelRatio: Math.min(dpr, 0.8),
+        minPixelRatio: 0.55,
         antialias: true,
         shadows: true,
-        shadowMapSize: 384,
+        shadowMapSize: 256,
         shadowType: THREE.PCFShadowMap,
-        exposure: 1.0,
+        exposure: 0.98,
         power: 'low-power',
-        renderPixelBudget: 900_000,
-        shadowUpdateInterval: 240,
+        renderPixelBudget: 800_000,
+        shadowUpdateInterval: 320,
     }
 };
 
