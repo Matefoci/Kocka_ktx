@@ -422,11 +422,11 @@ function updateCameraProjection() {
     camera.aspect = aspect;
 
      // ÚJ: kis konténer esetén hozzuk közelebb a kamerát / fókuszáljunk jobban
-    const isSmallContainer = width < 500; // a küszöbérték finomhangolható
+    const isSmallContainer = width < 400; // a küszöbérték finomhangolható
 
     if (isSmallContainer) {
-        camera.position.set(2.4, 1.3, -2.4); // közelebbi pozíció, mint az eredeti (3.5, 1.8, -3.5)
-        camera.fov = 32; // kicsit nagyobb FOV, hogy jobban kitöltse a kis dobozt
+        camera.position.set(3, 1.3, -3); // közelebbi pozíció, mint az eredeti (3.5, 1.8, -3.5)
+        camera.fov = 30; // kicsit nagyobb FOV, hogy jobban kitöltse a kis dobozt
     } else {
         camera.position.set(3.5, 1.8, -3.5); // eredeti, teljes képernyős pozíció
         camera.fov = DEFAULT_FOV;
