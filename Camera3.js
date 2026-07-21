@@ -140,16 +140,16 @@ const profiles = {
         renderPixelBudget: 1_500_000,
         shadowUpdateInterval: 140,
         */
-        pixelRatio: Math.min(dpr, 0.7),
-        minPixelRatio: 0.55,
+        pixelRatio: Math.min(dpr, 0.9),
+        minPixelRatio: 0.65,
         antialias: true,
         shadows: true,
-        shadowMapSize: 256,
+        shadowMapSize: 384,
         shadowType: THREE.PCFShadowMap,
-        exposure: 0.98,
+        exposure: 1.0,
         power: 'low-power',
-        renderPixelBudget: 750_000,
-        shadowUpdateInterval: 320,
+        renderPixelBudget: 900_000,
+        shadowUpdateInterval: 240,
     },
     2: {
         /* // HIGH TIER (Erős asztali gépek)
@@ -164,16 +164,16 @@ const profiles = {
         renderPixelBudget: 1_800_000,
         shadowUpdateInterval: 100,
         */
-        pixelRatio: Math.min(dpr, 0.7),
-        minPixelRatio: 0.55,
+         pixelRatio: Math.min(dpr, 0.9),
+        minPixelRatio: 0.65,
         antialias: true,
         shadows: true,
-        shadowMapSize: 256,
+        shadowMapSize: 384,
         shadowType: THREE.PCFShadowMap,
-        exposure: 0.98,
+        exposure: 1.0,
         power: 'low-power',
-        renderPixelBudget: 750_000,
-        shadowUpdateInterval: 320,
+        renderPixelBudget: 900_000,
+        shadowUpdateInterval: 240,
     }
 };
 
