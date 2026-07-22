@@ -164,6 +164,7 @@ function createProfileForTier(selectedTier) {
     return tierProfile;
 }
 
+// Fények csökkentése, Low és Emergency tier-nél keveseebb fény
 function applyLightVisibilityForTier(selectedTier) {
     const lowTier = selectedTier <= 0;
 
@@ -175,6 +176,7 @@ function applyLightVisibilityForTier(selectedTier) {
         light.visible = !lowTier || index <= 1;
     });
 }
+/*
 
 function refreshDebugOverlay() {
     if (!debugOverlay) return;
@@ -193,6 +195,7 @@ Antialias: ${profile.antialias} | Shadows: ${profile.shadows}
 ShadowMapSize: ${profile.shadowMapSize} | Power: ${profile.power}
 `.trim();
 }
+*/
 
 function applyProfileForTier(selectedTier) {
     tier = selectedTier;
@@ -219,7 +222,7 @@ function applyProfileForTier(selectedTier) {
     
 
     applyLightVisibilityForTier(tier);
-    refreshDebugOverlay();
+    //refreshDebugOverlay();
 }
 
 function handleBatteryUpdate(battery) {
@@ -227,7 +230,7 @@ function handleBatteryUpdate(battery) {
     batteryState.level = battery.level;
     batteryState.charging = battery.charging;
 
-    if (battery.level < 0.25) {
+    if (battery.level < 0.2) {
         if (baseTier > -1 && !batteryEmergencyActive) {
             batteryEmergencyActive = true;
             applyProfileForTier(-1);
@@ -241,9 +244,10 @@ function handleBatteryUpdate(battery) {
     if (batteryEmergencyActive) {
         batteryEmergencyActive = false;
         applyProfileForTier(baseTier);
-    } else {
+    } /*else {
         refreshDebugOverlay();
     }
+        */
 }
 
 function initBatteryMonitoring() {
@@ -297,6 +301,7 @@ loader.setKTX2Loader(ktx2Loader);
 
 
 // ----- Debug overlay -----
+/*
 const fpsOverlay = document.createElement("div");
 fpsOverlay.className = "fps-overlay";
 fpsOverlay.textContent = "FPS: --";
@@ -310,6 +315,7 @@ debugOverlay.style.whiteSpace = "pre-line";
 document.body.appendChild(debugOverlay);
 refreshDebugOverlay();
 initBatteryMonitoring();
+*/
 
 let fpsFrames = 0;
 let fpsLastUpdate = performance.now();
@@ -317,6 +323,7 @@ let shadowDirty = true;
 let lastShadowUpdate = 0;
 let lastRenderTime = 0;
 
+/*
 function updateFpsDisplay(now) {
     fpsFrames += 1;
     if (now - fpsLastUpdate < 300) return;
@@ -325,6 +332,7 @@ function updateFpsDisplay(now) {
     fpsFrames = 0;
     fpsLastUpdate = now;
 }
+    */
 
 function requestShadowUpdate() {
     shadowDirty = true;
@@ -579,13 +587,13 @@ function animate() {
     }
 
     if (profile.shadowUpdateInterval > 0 && now - lastRenderTime < 1000 / 30 && tier === -1) {
-        updateFpsDisplay(now);
+       // updateFpsDisplay(now);
         return;
     }
 
     lastRenderTime = now;
     renderer.render(scene, camera);
-    updateFpsDisplay(now);
+    //updateFpsDisplay(now);
 }
 
 // esemenykezeles
