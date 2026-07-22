@@ -8,6 +8,9 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xf9f7f4);
 scene.fog = new THREE.Fog(0xf9f7f4, 1.5, 45);
 
+const canvas = document.querySelector("#bg");
+const container = canvas?.parentElement || document.body;
+
 
 const sun = new THREE.DirectionalLight(0xfff1e0, 0.8);
 sun.position.set(4.2, 6.2, 3.2);
@@ -31,14 +34,12 @@ camera.position.set(3.3, 1.5, -3.3);
 camera.lookAt(0, 0.1, 0);
 
 
-function computeAdaptivePixelRatio(basePixelRatio, maxRenderPixels, minPixelRatio) {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const requestedPixels = width * height * basePixelRatio * basePixelRatio;
+function computeAdaptivePixelRatio(basePixelRatio, maxRenderPixels, minPixelRatio, renderWidth, renderHeight) {
+    const requestedPixels = renderWidth * renderHeight * basePixelRatio * basePixelRatio;
 
     if (requestedPixels <= maxRenderPixels) return basePixelRatio;
 
-    const scale = Math.sqrt(maxRenderPixels / (width * height));
+    const scale = Math.sqrt(maxRenderPixels / (renderWidth * renderHeight));
     return Math.max(minPixelRatio, scale);
 }
 
@@ -156,9 +157,11 @@ function createProfileForTier(selectedTier) {
     const tierProfile = { ...profiles[selectedTier] };
 
     tierProfile.pixelRatio = computeAdaptivePixelRatio(
-        tierProfile.pixelRatio,
-        tierProfile.renderPixelBudget,
-        tierProfile.minPixelRatio
+    tierProfile.pixelRatio,
+    tierProfile.renderPixelBudget,
+    tierProfile.minPixelRatio,
+    container.clientWidth || window.innerWidth,
+    container.clientHeight || window.innerHeight
     );
 
     return tierProfile;
@@ -267,8 +270,6 @@ function initBatteryMonitoring() {
 let profile = createProfileForTier(tier);
 
 // Renderer inicializálása
-const canvas = document.querySelector("#bg");
-const container = canvas?.parentElement || document.body;
 const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: profile.antialias,
@@ -522,12 +523,13 @@ function updateCameraProjection() {
     renderer.setSize(width, height, false);
 
     const adaptivePixelRatio = computeAdaptivePixelRatio(
-        profile.pixelRatio,
-        profile.renderPixelBudget,
-        profile.minPixelRatio
-    );
+    profile.pixelRatio,
+    profile.renderPixelBudget,
+    profile.minPixelRatio,
+    container.clientWidth || window.innerWidth,
+    container.clientHeight || window.innerHeight
+);
     renderer.setPixelRatio(adaptivePixelRatio);
-
 
     camera.aspect = aspect;
 
@@ -658,23 +660,6 @@ window.addEventListener("touchmove", (e) => {
 }, { passive: true });
 
 
-document.addEventListener(
-    "visibilitychange",
-    ()=>{
-
-        if(document.hidden){
-
-            stopAnimation();
-
-        }else{
-
-            startAnimation();
-
-        }
-
-    }
-);
-
 window.addEventListener("pagehide", stopAnimation);
 window.addEventListener("pageshow", () => {
     if (!document.hidden) {
@@ -702,6 +687,42 @@ function stopAnimation(){
         animationFrameId=null;
     }
 }
+
+// ===== Láthatóság-figyelés: scroll közben is szüneteltessen, ha a canvas nem látszik =====
+let canvasInView = true;
+
+const visibilityObserver = new IntersectionObserver(
+    (entries) => {
+        entries.forEach((entry) => {
+            canvasInView = entry.isIntersecting;
+
+            if (canvasInView && !document.hidden) {
+                startAnimation();
+            } else {
+                stopAnimation();
+            }
+        });
+    },
+    { threshold: 0.01 } // már akkor is "látható", ha csak 1%-a látszik
+);
+document.addEventListener(
+    "visibilitychange",
+    ()=>{
+
+        if(document.hidden){
+
+            stopAnimation();
+
+        }else if(canvasInView){
+
+            startAnimation();
+
+        }
+
+    }
+);
+
+visibilityObserver.observe(canvas);
 
 
 startAnimation();
