@@ -211,11 +211,12 @@ function applyProfileForTier(selectedTier) {
             renderer.shadowMap.enabled = false;
         }
     }
-
+    /*
     sun.castShadow = profile.shadows;
     sun.shadow.mapSize.set(profile.shadowMapSize, profile.shadowMapSize);
     sun.shadow.radius = tier <= 0 ? 0.8 : 1.6;
     sun.shadow.camera.updateProjectionMatrix();
+    */
 
     applyLightVisibilityForTier(tier);
     refreshDebugOverlay();
@@ -226,7 +227,7 @@ function handleBatteryUpdate(battery) {
     batteryState.level = battery.level;
     batteryState.charging = battery.charging;
 
-    if (battery.level < 0.25) {
+    if (battery.level < 0.69) {
         if (baseTier > -1 && !batteryEmergencyActive) {
             batteryEmergencyActive = true;
             applyProfileForTier(-1);
