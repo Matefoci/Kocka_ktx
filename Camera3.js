@@ -89,27 +89,27 @@ const tierNames = {
 // 5. Grafikai profilok dedikálása a szintekhez
 const profiles = {
     [-1]: { // EMERGENCY TIER
-        pixelRatio: Math.min(dpr, 0.8),
+        pixelRatio: Math.min(dpr, 0.65),
         minPixelRatio: 0.55,
         antialias: true,
         shadows: true,
         shadowMapSize: 256,
-        shadowType: THREE.PCFShadowMap,
+        shadowType: THREE.BasicShadowMap,
         exposure: 0.98,
         power: 'low-power',
-        renderPixelBudget: 800_000,
+        renderPixelBudget: 650_000,
         shadowUpdateInterval: 320,
     },
     0: { // LOW TIER
-        pixelRatio: Math.min(dpr, 0.9),
+        pixelRatio: Math.min(dpr, 0.8),
         minPixelRatio: 0.65,
         antialias: true,
         shadows: true,
         shadowMapSize: 384,
-        shadowType: THREE.PCFShadowMap,
+        shadowType: THREE.BasicShadowMap,
         exposure: 1.0,
         power: 'low-power',
-        renderPixelBudget: 900_000,
+        renderPixelBudget: 800_000,
         shadowUpdateInterval: 240,
     },
     1: { // MID TIER (Tabletek, átlagos mobilok)
@@ -269,6 +269,18 @@ const rectReplacementLights = rectReplacementConfigs.map(cfg => {
     scene.add(pl);
     return pl;
 });
+
+// A pointLightConfigs és rectReplacementConfigs betöltése UTÁN, tier alapján szűrjük:
+
+if (tier <= 0) {
+    // Low és Emergency tier-en: csak a legfontosabb 2-3 fényt tartjuk meg
+    rectReplacementLights.forEach((light, i) => {
+        if (i > 0) light.visible = false; // csak az első marad látható a 3-ból
+    });
+    pointLights.forEach((light, i) => {
+        if (i > 1) light.visible = false; // csak az első kettő marad látható a 3-ból
+    });
+}
 
 // gizmo
 
