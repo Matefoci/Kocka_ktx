@@ -112,7 +112,8 @@ const profiles = {
         renderPixelBudget: 800_000,
         shadowUpdateInterval: 240,
     },
-    1: { // MID TIER (Tabletek, átlagos mobilok)
+    1: { 
+        /*// MID TIER (Tabletek, átlagos mobilok)
         pixelRatio: Math.min(dpr, 1.3),
         minPixelRatio: 0.75,
         antialias: true,
@@ -123,9 +124,21 @@ const profiles = {
         power: 'default',
         renderPixelBudget: 1_300_000,
         shadowUpdateInterval: 200,
+        */
+       pixelRatio: Math.min(dpr, 0.8),
+        minPixelRatio: 0.65,
+        antialias: true,
+        shadows: true,
+        shadowMapSize: 384,
+        shadowType: THREE.BasicShadowMap,
+        exposure: 1.0,
+        power: 'low-power',
+        renderPixelBudget: 800_000,
+        shadowUpdateInterval: 240,
         
     },
     2: {
+        /*
         // HIGH TIER (Erős asztali gépek)
         pixelRatio: Math.min(dpr, 1.6),
         minPixelRatio: 0.85,
@@ -137,6 +150,17 @@ const profiles = {
         power: 'high-performance',
         renderPixelBudget: 1_800_000,
         shadowUpdateInterval: 100,
+        */
+       pixelRatio: Math.min(dpr, 0.8),
+        minPixelRatio: 0.65,
+        antialias: true,
+        shadows: true,
+        shadowMapSize: 384,
+        shadowType: THREE.BasicShadowMap,
+        exposure: 1.0,
+        power: 'low-power',
+        renderPixelBudget: 800_000,
+        shadowUpdateInterval: 240,
        
     }
 };
