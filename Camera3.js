@@ -211,12 +211,12 @@ function applyProfileForTier(selectedTier) {
             renderer.shadowMap.enabled = false;
         }
     }
-    /*
+    
     sun.castShadow = profile.shadows;
     sun.shadow.mapSize.set(profile.shadowMapSize, profile.shadowMapSize);
     sun.shadow.radius = tier <= 0 ? 0.8 : 1.6;
     sun.shadow.camera.updateProjectionMatrix();
-    */
+    
 
     applyLightVisibilityForTier(tier);
     refreshDebugOverlay();
@@ -227,7 +227,7 @@ function handleBatteryUpdate(battery) {
     batteryState.level = battery.level;
     batteryState.charging = battery.charging;
 
-    if (battery.level < 0.69) {
+    if (battery.level < 0.2) {
         if (baseTier > -1 && !batteryEmergencyActive) {
             batteryEmergencyActive = true;
             applyProfileForTier(-1);
@@ -288,12 +288,6 @@ if (profile.shadows) {
 }
 
 
-sun.castShadow = profile.shadows;
-sun.shadow.mapSize.set(profile.shadowMapSize, profile.shadowMapSize);
-sun.shadow.radius = tier <= 0 ? 0.8 : 1.6;
-sun.shadow.camera.updateProjectionMatrix();
-
-
 const ktx2Loader = new KTX2Loader();
 ktx2Loader.setTranscoderPath(import.meta.env.BASE_URL + 'basis/');
 //ktx2Loader.setTranscoderPath('https://unpkg.com/three/examples/jsm/libs/basis/');
@@ -350,7 +344,7 @@ function updateShadowMap(now) {
 const pointLightConfigs = [
     { pos: [2.6, 1.0, -1.9],   color: 0xffe8cc, intensity: 5.5 },  // kicsit közelebb hozva, mint eredeti (3, 1.1, -2.2)
     { pos: [2.6, 1.3, -1.7],   color: 0xffe8cc, intensity: 2.8 },
-    { pos: [0, 0.3, -2.8],     color: 0xfff4e6, intensity: 4.2 },  // kicsit feljebb (0.1→0.3), hogy jobban látszódjon oldalról
+    { pos: [0, 0.3, -2.8],     color: 0xfff4e6, intensity: 0.5 },  // kicsit feljebb (0.1→0.3), hogy jobban látszódjon oldalról
 ];
 
 const pointLights = pointLightConfigs.map(cfg => {
@@ -364,8 +358,8 @@ const pointLights = pointLightConfigs.map(cfg => {
 // ===== POINT LIGHTS — a RectAreaLight-ok kiváltására, csökkentett felül-hangsúllyal =====
 const rectReplacementConfigs = [
     { pos: [-0.5, 1.9, 0.5], color: 0xffffff, intensity: 2.6, distance: 8 },   // kicsit lejjebb (2.2→1.9), gyengébb (3.0→2.6) — kevésbé domináns felülről
-    { pos: [-1.2, 1.8, 1.4], color: 0xffe8d0, intensity: 3.2, distance: 9 },   // lejjebb (2.4→1.8), enyhén gyengébb
-    { pos: [1.6, 1.5, 0.9],  color: 0xffe8d0, intensity: 2.8, distance: 8 },   // lejjebb (1.9→1.5) — most inkább oldal-fény, mint felülfény
+    { pos: [-1.2, 1.8, 1.4], color: 0xffe8d0, intensity: 0.6, distance: 9 },   // lejjebb (2.4→1.8), enyhén gyengébb
+    { pos: [1.6, 1.5, 0.9],  color: 0xffe8d0, intensity: 0.7, distance: 8 },   // lejjebb (1.9→1.5) — most inkább oldal-fény, mint felülfény
 ];
 
 const rectReplacementLights = rectReplacementConfigs.map(cfg => {
