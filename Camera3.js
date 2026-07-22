@@ -227,7 +227,7 @@ function handleBatteryUpdate(battery) {
     batteryState.level = battery.level;
     batteryState.charging = battery.charging;
 
-    if (battery.level < 0.2) {
+    if (battery.level < 0.25) {
         if (baseTier > -1 && !batteryEmergencyActive) {
             batteryEmergencyActive = true;
             applyProfileForTier(-1);
@@ -407,7 +407,6 @@ let nyil = null;
 let dragging = false;
 let previousX = 0;
 let autoRotate = true;
-const mouse = new THREE.Vector2();
 
 
 function applyWoodMaterial(root, tintColor = null, roughnessOverride = null, aoIntensity = 1.0) {
@@ -542,9 +541,14 @@ window.addEventListener("resize", updateCameraProjection);
 updateCameraProjection();
 
 // Animation
+let animationFrameId = null;
+let animationRunning = false;
 
 function animate() {
-    requestAnimationFrame(animate);
+    
+    if(!animationRunning) return;
+    
+    animationFrameId = requestAnimationFrame(animate);
     const now = performance.now();
 
     let isMoving = false;
@@ -646,4 +650,50 @@ window.addEventListener("touchmove", (e) => {
 }, { passive: true });
 
 
-animate();
+document.addEventListener(
+    "visibilitychange",
+    ()=>{
+
+        if(document.hidden){
+
+            stopAnimation();
+
+        }else{
+
+            startAnimation();
+
+        }
+
+    }
+);
+
+window.addEventListener("pagehide", stopAnimation);
+window.addEventListener("pageshow", () => {
+    if (!document.hidden) {
+        startAnimation();
+    }
+});
+
+function startAnimation(){
+
+    if(animationRunning) return;
+
+    animationRunning = true;
+
+    animate();
+}
+
+function stopAnimation(){
+
+    animationRunning = false;
+
+    if(animationFrameId){
+
+        cancelAnimationFrame(animationFrameId);
+
+        animationFrameId=null;
+    }
+}
+
+
+startAnimation();
