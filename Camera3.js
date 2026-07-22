@@ -101,7 +101,7 @@ const profiles = {
         shadowUpdateInterval: 320,
     },
     0: { // LOW TIER
-        pixelRatio: Math.min(dpr, 0.8),
+        pixelRatio: Math.min(dpr, 0.9),
         minPixelRatio: 0.65,
         antialias: true,
         shadows: true,
@@ -109,7 +109,7 @@ const profiles = {
         shadowType: THREE.BasicShadowMap,
         exposure: 1.0,
         power: 'low-power',
-        renderPixelBudget: 800_000,
+        renderPixelBudget: 900_000,
         shadowUpdateInterval: 240,
     },
     1: { 
@@ -125,16 +125,16 @@ const profiles = {
         renderPixelBudget: 1_300_000,
         shadowUpdateInterval: 200,
         */
-       pixelRatio: Math.min(dpr, 0.8),
-        minPixelRatio: 0.65,
+       pixelRatio: Math.min(dpr, 0.65),
+        minPixelRatio: 0.55,
         antialias: true,
         shadows: true,
-        shadowMapSize: 384,
+        shadowMapSize: 256,
         shadowType: THREE.BasicShadowMap,
-        exposure: 1.0,
+        exposure: 0.98,
         power: 'low-power',
-        renderPixelBudget: 800_000,
-        shadowUpdateInterval: 240,
+        renderPixelBudget: 650_000,
+        shadowUpdateInterval: 320,
         
     },
     2: {
@@ -151,16 +151,16 @@ const profiles = {
         renderPixelBudget: 1_800_000,
         shadowUpdateInterval: 100,
         */
-       pixelRatio: Math.min(dpr, 0.8),
-        minPixelRatio: 0.65,
+      pixelRatio: Math.min(dpr, 0.65),
+        minPixelRatio: 0.55,
         antialias: true,
         shadows: true,
-        shadowMapSize: 384,
+        shadowMapSize: 256,
         shadowType: THREE.BasicShadowMap,
-        exposure: 1.0,
+        exposure: 0.98,
         power: 'low-power',
-        renderPixelBudget: 800_000,
-        shadowUpdateInterval: 240,
+        renderPixelBudget: 650_000,
+        shadowUpdateInterval: 320,
        
     }
 };
