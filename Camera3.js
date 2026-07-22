@@ -270,7 +270,6 @@ const rectReplacementLights = rectReplacementConfigs.map(cfg => {
     return pl;
 });
 
-
 // gizmo
 
 let gizmoGroup;
@@ -484,7 +483,7 @@ function animate() {
 
 // esemenykezeles
 
-window.addEventListener("mousedown", (e) => {
+canvas.addEventListener("mousedown", (e) => {
 
     if (!cubeStructure) return;
 
@@ -515,8 +514,7 @@ window.addEventListener("mousemove",(e)=>{
 
 // esemenykezeles — touch (mobil)
 
-window.addEventListener("touchstart", (e) => {
-
+canvas.addEventListener("touchstart", (e) => {
 
     if (!cubeStructure) return;
 
