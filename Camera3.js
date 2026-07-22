@@ -195,7 +195,7 @@ const fpsOverlay = document.createElement("div");
 fpsOverlay.className = "fps-overlay";
 fpsOverlay.textContent = "FPS: --";
 document.body.appendChild(fpsOverlay);
-/*
+
 const debugOverlay = document.createElement("div");
 debugOverlay.className = "fps-overlay";
 debugOverlay.style.top = "60px";
@@ -210,7 +210,7 @@ Antialias: ${profile.antialias} | Shadows: ${profile.shadows}
 ShadowMapSize: ${profile.shadowMapSize} | Power: ${profile.power}
 `.trim();
 document.body.appendChild(debugOverlay);
-*/
+
 let fpsFrames = 0;
 let fpsLastUpdate = performance.now();
 let shadowDirty = true;
