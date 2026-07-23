@@ -67,6 +67,8 @@ const batteryState = {
 // -1 = Emergency, 0 = Low, 1 = Mid, 2 = High
 let tier = 2;
 
+
+
 const emergencyDevice =
     memory <= 1 ||
     cores <= 2 ||
@@ -98,7 +100,7 @@ const tierNames = {
 // 5. Grafikai profilok dedikálása a szintekhez
 const profiles = {
     [-1]: { // EMERGENCY TIER
-        pixelRatio: Math.min(dpr, 0.65),
+        basePixelRatio: Math.min(dpr, 0.65),
         minPixelRatio: 0.55,
         antialias: true,
         shadows: true,
@@ -110,7 +112,7 @@ const profiles = {
         shadowUpdateInterval: 320,
     },
     0: { // LOW TIER
-        pixelRatio: Math.min(dpr, 0.8),
+        basePixelRatio: Math.min(dpr, 0.8),
         minPixelRatio: 0.65,
         antialias: true,
         shadows: true,
@@ -123,7 +125,7 @@ const profiles = {
     },
     1: { 
         // MID TIER (Tabletek, átlagos mobilok)
-        pixelRatio: Math.min(dpr, 1.3),
+        basePixelRatio: Math.min(dpr, 1.3),
         minPixelRatio: 0.75,
         antialias: true,
         shadows: true,
@@ -138,7 +140,7 @@ const profiles = {
     2: {
         
         // HIGH TIER (Erős asztali gépek)
-        pixelRatio: Math.min(dpr, 1.6),
+        basePixelRatio: Math.min(dpr, 1.6),
         minPixelRatio: 0.85,
         antialias: true,
         shadows: true,
@@ -157,14 +159,30 @@ function createProfileForTier(selectedTier) {
     const tierProfile = { ...profiles[selectedTier] };
 
     tierProfile.pixelRatio = computeAdaptivePixelRatio(
-    tierProfile.pixelRatio,
-    tierProfile.renderPixelBudget,
-    tierProfile.minPixelRatio,
-    container.clientWidth || window.innerWidth,
-    container.clientHeight || window.innerHeight
+        tierProfile.basePixelRatio,
+        tierProfile.renderPixelBudget,
+        tierProfile.minPixelRatio,
+        container.clientWidth || window.innerWidth,
+        container.clientHeight || window.innerHeight
     );
 
     return tierProfile;
+}
+let profile = createProfileForTier(tier);
+
+function applyRendererSettingsForProfile(currentProfile) {
+    renderer.setPixelRatio(currentProfile.pixelRatio);
+    renderer.toneMappingExposure = currentProfile.exposure;
+
+    if (currentProfile.shadows) {
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = currentProfile.shadowType;
+        renderer.shadowMap.autoUpdate = false;
+        renderer.shadowMap.needsUpdate = true;
+        return;
+    }
+
+    renderer.shadowMap.enabled = false;
 }
 
 // Fények csökkentése, Low és Emergency tier-nél keveseebb fény
@@ -205,17 +223,7 @@ function applyProfileForTier(selectedTier) {
     profile = createProfileForTier(tier);
 
     if (renderer) {
-        renderer.setPixelRatio(profile.pixelRatio);
-        renderer.toneMappingExposure = profile.exposure;
-
-        if (profile.shadows) {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = profile.shadowType;
-            renderer.shadowMap.autoUpdate = false;
-            renderer.shadowMap.needsUpdate = true;
-        } else {
-            renderer.shadowMap.enabled = false;
-        }
+        applyRendererSettingsForProfile(profile);
     }
     
     sun.castShadow = profile.shadows;
@@ -240,7 +248,7 @@ function handleBatteryUpdate(battery) {
             return;
         }
 
-        refreshDebugOverlay();
+        //refreshDebugOverlay();
         return;
     }
 
@@ -267,7 +275,7 @@ function initBatteryMonitoring() {
         .catch(() => {});
 }
 
-let profile = createProfileForTier(tier);
+
 
 // Renderer inicializálása
 const renderer = new THREE.WebGLRenderer({
@@ -277,20 +285,10 @@ const renderer = new THREE.WebGLRenderer({
     powerPreference: profile.power
 });
 
-renderer.setPixelRatio(profile.pixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = profile.exposure;
-
-if (profile.shadows) {
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = profile.shadowType;
-    renderer.shadowMap.autoUpdate = false;
-    renderer.shadowMap.needsUpdate = true;
-} else {
-    renderer.shadowMap.enabled = false;
-}
+applyRendererSettingsForProfile(profile);
 
 
 const ktx2Loader = new KTX2Loader();
@@ -315,8 +313,9 @@ debugOverlay.style.fontSize = "11px";
 debugOverlay.style.whiteSpace = "pre-line";
 document.body.appendChild(debugOverlay);
 refreshDebugOverlay();
-initBatteryMonitoring();
+
 */
+initBatteryMonitoring();
 
 let fpsFrames = 0;
 let fpsLastUpdate = performance.now();
@@ -523,11 +522,11 @@ function updateCameraProjection() {
     renderer.setSize(width, height, false);
 
     const adaptivePixelRatio = computeAdaptivePixelRatio(
-    profile.pixelRatio,
-    profile.renderPixelBudget,
-    profile.minPixelRatio,
-    container.clientWidth || window.innerWidth,
-    container.clientHeight || window.innerHeight
+        profile.basePixelRatio,
+        profile.renderPixelBudget,
+        profile.minPixelRatio,
+        container.clientWidth || window.innerWidth,
+        container.clientHeight || window.innerHeight
 );
     renderer.setPixelRatio(adaptivePixelRatio);
 
@@ -660,12 +659,7 @@ window.addEventListener("touchmove", (e) => {
 }, { passive: true });
 
 
-window.addEventListener("pagehide", stopAnimation);
-window.addEventListener("pageshow", () => {
-    if (!document.hidden) {
-        startAnimation();
-    }
-});
+
 
 function startAnimation(){
 
@@ -705,22 +699,13 @@ const visibilityObserver = new IntersectionObserver(
     },
     { threshold: 0.01 } // már akkor is "látható", ha csak 1%-a látszik
 );
-document.addEventListener(
-    "visibilitychange",
-    ()=>{
 
-        if(document.hidden){
-
-            stopAnimation();
-
-        }else if(canvasInView){
-
-            startAnimation();
-
-        }
-
+window.addEventListener("pagehide", stopAnimation);
+window.addEventListener("pageshow", () => {
+    if (!document.hidden) {
+        startAnimation();
     }
-);
+});
 
 visibilityObserver.observe(canvas);
 
