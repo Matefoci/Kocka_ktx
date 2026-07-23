@@ -488,7 +488,7 @@ Promise.all([
 
     // --- Plane ---
     scene.add(planeGltf.scene);
-    applyWoodMaterial(planeGltf.scene, 0xe8dfd0, 0.85); //  0xe8c3b0  0xe8dfd0
+    applyWoodMaterial(planeGltf.scene, null, 0.85); //  0xe8c3b0  0xe8dfd0
     plane = planeGltf.scene.getObjectByName("Plane") || planeGltf.scene;
     plane.receiveShadow = true;
     requestShadowUpdate();
