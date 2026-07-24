@@ -467,7 +467,7 @@ const modelUrls = [
     */
 
     new URL('./models/kocka-ktx2.glb', import.meta.url).href,
-    new URL('./models/PlaneVilagosabb-ktx2.glb', import.meta.url).href,
+    new URL('./models/PlaneVilagosabb1-ktx2.glb', import.meta.url).href,
     new URL('./models/Nyil6.glb', import.meta.url).href,
 ];
 
